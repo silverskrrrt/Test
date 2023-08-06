@@ -1,47 +1,48 @@
-# ehsq_dashboard.py
+# baudokumentation_app.py
 import streamlit as st
 import pandas as pd
 import numpy as np
 
-# Mock data generation
-def generate_mock_data(adjustment_factor):
+# Mock data generation for IoT
+def generate_iot_data():
     return {
-        "Carbon Emissions (tons)": np.random.randint(1000, 5000) * adjustment_factor,
-        "Water Usage (kL)": np.random.randint(500, 2000) * adjustment_factor,
-        "Waste Recycled (%)": np.random.randint(50, 99),
-        "Energy Consumption (MWh)": np.random.randint(100, 500) * adjustment_factor,
-        "Safety Incidents": np.random.randint(0, 10),
-        "Employee Training Hours": np.random.randint(100, 400) * adjustment_factor,
-        "Product Quality Issues": np.random.randint(0, 10),
-        "Stakeholder Engagements": np.random.randint(1, 20) * adjustment_factor
+        "Temperature (°C)": np.random.uniform(15, 30),
+        "Humidity (%)": np.random.uniform(40, 70),
+        "Air Quality (AQI)": np.random.randint(10, 100)
     }
 
 # App title and description
-st.title("Interactive EHSQ KPI Dashboard for ESG Improvement")
-st.write("""
-This dashboard showcases key performance indicators (KPIs) with interactive sliders and visualizations.
-""")
+st.title("Baudokumentation with IoT Data Display")
+st.write("Enter Baudokumentation audit details and view sample IoT data below.")
 
-# Slider for adjusting mock data
-adjustment_factor = st.slider("Adjustment Factor for KPIs", 0.5, 2.0, 1.0)
-data = generate_mock_data(adjustment_factor)
+# Form for Baudokumentation
+with st.form(key='bauform'):
+    st.subheader("Baudokumentation Audit Entry")
+    project_name = st.text_input("Project Name:")
+    date = st.date_input("Date")
+    location = st.text_input("Location:")
+    inspector_name = st.text_input("Inspector Name:")
+    comments = st.text_area("Comments:")
+    submit_data = st.form_submit_button("Add Entry")
 
-# Display KPIs and visualizations
-for kpi, value in data.items():
-    st.subheader(kpi)
-    st.metric(label=kpi, value=value)
-    
-    if kpi in ["Carbon Emissions (tons)", "Water Usage (kL)", "Energy Consumption (MWh)", "Employee Training Hours", "Stakeholder Engagements"]:
-        st.bar_chart([value, value / adjustment_factor])
-    
-    elif kpi == "Waste Recycled (%)":
-        st.line_chart([value, value / adjustment_factor])
-    
-    elif kpi in ["Safety Incidents", "Product Quality Issues"]:
-        st.pie_chart([value, 10 - value])
+# Display Baudokumentation data if submitted
+if submit_data:
+    st.subheader("Submitted Baudokumentation Audit Details")
+    st.write("Project Name:", project_name)
+    st.write("Date:", date)
+    st.write("Location:", location)
+    st.write("Inspector Name:", inspector_name)
+    st.write("Comments:", comments)
 
-st.write("""
-Note: This dashboard uses mock data for demonstration. To make it functional for your organization, integrate it with your data sources and customize the KPIs accordingly.
-""")
+# Display IoT data
+st.subheader("Sample IoT Data")
+iot_data = generate_iot_data()
+for kpi, value in iot_data.items():
+    st.metric(label=kpi, value=f"{value:.2f}")
 
-# Run the app: `streamlit run ehsq_dashboard.py`
+# For enhanced visualization, we can create charts for IoT data:
+iot_df = pd.DataFrame([iot_data])
+
+st.bar_chart(iot_df)
+
+# Run the app: `streamlit run baudokumentation_app.py`
