@@ -1,37 +1,35 @@
-# audit_app.py
+# ehsq_dashboard.py
 import streamlit as st
 import pandas as pd
+import numpy as np
 
-# Create or load data
-try:
-    # Load previous data
-    data = pd.read_csv('audit_data.csv')
-except FileNotFoundError:
-    # Or initialize an empty dataframe
-    data = pd.DataFrame(columns=["Date", "Auditor", "Department", "Findings", "Recommendations"])
+# Mock data generation
+def generate_mock_data():
+    return {
+        "Carbon Emissions (tons)": np.random.randint(1000, 5000),
+        "Water Usage (kL)": np.random.randint(500, 2000),
+        "Waste Recycled (%)": np.random.randint(50, 99),
+        "Energy Consumption (MWh)": np.random.randint(100, 500),
+        "Safety Incidents": np.random.randint(0, 10),
+        "Employee Training Hours": np.random.randint(100, 400),
+        "Product Quality Issues": np.random.randint(0, 10),
+        "Stakeholder Engagements": np.random.randint(1, 20)
+    }
 
-# App Title
-st.title("Simple Auditing App")
+# App title and description
+st.title("EHSQ KPI Dashboard for ESG Improvement")
+st.write("""
+This dashboard showcases key performance indicators (KPIs) that are relevant for enhancing a company's Environmental, Social, and Governance (ESG) ratings.
+""")
 
-# Form for new audit entry
-with st.form(key='audit_form'):
-    st.subheader("New Audit Entry")
-    date = st.date_input("Audit Date")
-    auditor = st.text_input("Auditor's Name")
-    department = st.text_input("Department")
-    findings = st.text_area("Findings")
-    recommendations = st.text_area("Recommendations")
+# Generate and display KPIs
+data = generate_mock_data()
 
-    submit_data = st.form_submit_button("Add Entry")
+for kpi, value in data.items():
+    st.metric(label=kpi, value=value)
 
-# Handle submitted data
-if submit_data:
-    new_data = {"Date": date, "Auditor": auditor, "Department": department, 
-                "Findings": findings, "Recommendations": recommendations}
-    data = data.append(new_data, ignore_index=True)
-    data.to_csv('audit_data.csv', index=False)
+st.write("""
+Note: This dashboard uses mock data. To make it functional for your organization, integrate it with your data sources and customize the KPIs accordingly.
+""")
 
-# Display data
-st.subheader("Audit Entries")
-st.write(data)
-
+# Run the app: `streamlit run ehsq_dashboard.py`
